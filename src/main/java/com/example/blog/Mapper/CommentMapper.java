@@ -16,6 +16,8 @@ public interface CommentMapper {
 @Mapping(target = "commentReply", source = "commentReply") // Explicitly map commentReply
 CommentDto commentToCommentDto(Comment comment);
 
+
+
     List<CommentDto> repliesToRepliesDto(List<Comment> replies);
 
 
@@ -23,5 +25,6 @@ CommentDto commentToCommentDto(Comment comment);
     @Mapping(target = "blogs",ignore = true)
     @Mapping(source = "username",target = "userName")
     UserDto userToUserDtoNoBlogs(User user);
+
 
 }

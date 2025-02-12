@@ -1,16 +1,21 @@
 package com.example.blog.Controller;
 
+import com.example.blog.Dto.BlogDto;
+import com.example.blog.Dto.CommentDto;
 import com.example.blog.Dto.UserDto;
+import com.example.blog.Entity.Comment;
 import com.example.blog.Entity.User;
 import com.example.blog.Mapper.UserMapper;
 import com.example.blog.Service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/user/")
@@ -38,6 +43,15 @@ public class UserController {
       userService.deleteUserById(id);
       return new ResponseEntity<>("User deleted", HttpStatus.OK);
 
+    }
+    @GetMapping("/getBlogByUserId")
+    public ResponseEntity<List<BlogDto>> getBlogByUserId(@RequestParam("userId") Long userId) {
+        List<BlogDto> blogDtos = userService.blogListByUserId(userId);
+        return new ResponseEntity<>(blogDtos, HttpStatus.OK);
+    }
+    @GetMapping("/getCommentByUserId")
+    public ResponseEntity<List<Map<String, Object>>> getCommentByUserId(@RequestParam("userId") Long userId) {
+        return new ResponseEntity<>(userService.getAllCommentsByUserId(userId), HttpStatus.OK);
     }
 
 }

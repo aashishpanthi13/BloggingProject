@@ -1,7 +1,9 @@
 package com.example.blog.ServiceImplt;
 
+import com.example.blog.Dto.BlogDto;
 import com.example.blog.Entity.Blog;
 import com.example.blog.Entity.User;
+import com.example.blog.Mapper.BlogMapper;
 import com.example.blog.Repo.BlogRepo;
 import com.example.blog.Repo.UserRepo;
 import com.example.blog.Service.BlogService;
@@ -18,6 +20,7 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 public class BlogServiceImplt implements BlogService {
     private final BlogRepo blogRepo;
     private final UserRepo userRepo;
+    private final BlogMapper blogMapper;
 
 
     @Override
@@ -49,6 +52,30 @@ public class BlogServiceImplt implements BlogService {
         return "User Not Found";
     }
 
-
+    @Override
+    public BlogDto getById(Long blogId) {
+        Optional<Blog> blog = blogRepo.findById(blogId);
+        if (blog.isPresent()) {
+            return blogMapper.blogToBlogDto(blog.get());
+        }
+        else{
+            throw new RuntimeException("Blog Not Found");
+        }
 
     }
+
+    @Override
+    public List<BlogDto> getAll() {
+        return blogMapper.blogListToBlogDtoList(blogRepo.findAll());
+    }
+
+    @Override
+    public List<BlogDto> getBlogByUserId(Long userId) {
+        Optional<User> user = userRepo.findById(userId);
+        if (user.isPresent()) {
+            return blogMapper.blogListToBlogDtoList(user.get().getBlogs());
+        }else throw new RuntimeException("User Not Found");
+    }
+
+
+}

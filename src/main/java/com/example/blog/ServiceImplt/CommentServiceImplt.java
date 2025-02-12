@@ -13,7 +13,11 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @AllArgsConstructor
 @Service
 public class CommentServiceImplt implements CommentService {
@@ -59,9 +63,38 @@ public class CommentServiceImplt implements CommentService {
     }
 
     @Override
-    public CommentDto getComment(Long commentId) {
+    public CommentDto getCommentById(Long commentId) {
         Comment comment=commentRepo.findById(commentId).get();
         System.out.println("comment:"+comment);
         return commentMapper.commentToCommentDto(comment);
     }
+
+    @Override
+    public List<CommentDto> getAll() {
+        return commentMapper.repliesToRepliesDto(commentRepo.findAll());
+    }
+
+    @Override
+    public List<Map<String, Object>> getByBlogId(Long blogId) {
+        Optional<Blog>blog=blogRepo.findById(blogId);
+        if(blog.isPresent()) {
+            return commentRepo.findCommentByBlogId(blogId);
+        }else {
+            throw new RuntimeException("Blog not found");
+        }
+        }
+
+    @Override
+    public List<Map<String, Object>> getByUserId(Long userId) {
+       Optional<User>user=userRepo.findById(userId);
+       if(user.isPresent()) {
+           return userRepo.findCommentsByUserId(userId);
+       }else {
+           throw new RuntimeException("User not found");
+       }
+    }
+
 }
+
+
+
